@@ -1,8 +1,8 @@
 USER_BOT_NAME = 'wellbodhi_bot'
-USER_BOT_TOKEN = '6609979071:AAGjIJlNyfJVIISyOCZuiJCWw0jEEGfYhTk'
+USER_BOT_TOKEN = ''
 
 ADMIN_BOT_NAME = 'wellbodhiadmin_bot'
-ADMIN_BOT_TOKEN = '6678798264:AAEc71uOBGK9cpqNT6tSro5pbGTfr7OS_hU'
+ADMIN_BOT_TOKEN = ''
 
 
 class Texts:
