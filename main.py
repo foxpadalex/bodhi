@@ -84,8 +84,33 @@ async def stop_state(msg: types.Message, state: FSMContext) -> None:
     await msg.answer(db.get_msg('menu_msg'), reply_markup=kb.main_menu())
 
 
-MENU = ['Расписание', 'Записи практик', 'Фокус недели', 'FAQ', 'Красная кнопка 🚨', 'Сменить часовой пояс', 'Медитации', 'Отправить фото']
+MENU = ['Расписание', 'Записи практик', 'Фокус недели', 'FAQ', 'Красная кнопка 🚨', 'Сменить часовой пояс', 'Медитации',
+        'Отправить фото']
 
+
+@dp.message_handler(commands=['stats'], state='*')
+async def get_statistic(msg: types.Message) -> None:
+    username = msg.from_user.username
+    user_id = db.get_user_id(username)[0]
+    user_id = 5350397864
+    questions = db.get_questions()
+    statistic_list = db.get_user_statisctic(user_id)
+    answers = list()
+    dates = list()
+    for question in questions:
+        answer_list = list()
+        date_list = list()
+        for i in statistic_list:
+            if i[1] == question[1]:
+                date_list.append(i[0])
+                answer_list.append(i[2])
+        answers.append(answer_list)
+        dates.append(date_list)
+    title_row = list()
+    title_row.append('Вопрос')
+    title_row.extend(dates[0])
+
+    print(title_row, statistic_list, answers, dates)
 
 async def support_answer(user_id) -> None:
     await bot.send_message(chat_id=user_id, text=db.get_msg('support_answer'), reply_markup=kb.support_answer())
@@ -132,7 +157,8 @@ async def cmd_start(msg: types.Message, state: FSMContext) -> None:
         if ref != '':
             last_msg = await msg.answer('YO!', reply_markup=kb.main_menu())
             await bot.delete_message(chat_id=last_msg.chat.id, message_id=last_msg.message_id)
-            db.add_user(msg.from_user.id, msg.from_user.username, msg.from_user.first_name, msg.from_user.last_name, int(ref))
+            db.add_user(msg.from_user.id, msg.from_user.username, msg.from_user.first_name, msg.from_user.last_name,
+                        int(ref))
             await msg.answer_sticker(sticker=db.get_sticker('start'), reply_markup=kb.one_btn('Привет', 'hello'))
         else:
             await msg.answer(db.get_msg('not_member'))
@@ -219,7 +245,7 @@ async def start_day(user_id: int, time: str, msg: types.Message) -> None:
         try:
             last_msg = await bot.send_message(chat_id=user_id, text=text, reply_markup=kb.start_day())
             job_id = 'already_start_training_' + str(user_id)
-        # run_date = datetime.now() + timedelta(seconds=5)
+            # run_date = datetime.now() + timedelta(seconds=5)
             run_date = datetime.now() + timedelta(minutes=15)
             scheduler.add_job(already_start_training, 'date', run_date=run_date, id=job_id,
                               kwargs={'user_id': user_id, 'msg': last_msg})
@@ -456,7 +482,8 @@ async def link_zoom(user_id: int, msg: types.Message) -> None:
             # scheduler.add_job(delete_link_training, 'date', run_date=run_date,
             #                   kwargs={'user_id': user_id, 'msg': last_msg})
         else:
-            await bot.send_message(chat_id=user_id, text='Спасибо за ответы 🙏🏻🧘🏽‍♂️🧡\n\n<i>Скоро придет ссылка на ZOOM.</i>')
+            await bot.send_message(chat_id=user_id,
+                                   text='Спасибо за ответы 🙏🏻🧘🏽‍♂️🧡\n\n<i>Скоро придет ссылка на ZOOM.</i>')
     else:
         try:
             link = db.get_training_record(datetime.now().strftime('%d.%m.%Y'))
@@ -468,7 +495,8 @@ async def link_zoom(user_id: int, msg: types.Message) -> None:
             #                   kwargs={'user_id': user_id, 'msg': last_msg})
         except Exception as ex:
             print(ex)
-            await bot.send_message(chat_id=user_id, text='Спасибо за ответы 🙏🏻🧘🏽‍♂️🧡\n\nСсылка на запись будет у тебя в меню')
+            await bot.send_message(chat_id=user_id,
+                                   text='Спасибо за ответы 🙏🏻🧘🏽‍♂️🧡\n\nСсылка на запись будет у тебя в меню')
 
 
 async def link_record(user_id: int) -> None:
@@ -647,7 +675,8 @@ async def check_watched_video_btn(callback_query: types.CallbackQuery, callback_
         # поменять время
         # run_date = datetime.now() + timedelta(seconds=5)
         run_date = datetime.now() + timedelta(hours=6)
-        scheduler.add_job(no_photo, 'date', run_date=run_date, id=job_id, kwargs={'user_id': callback_query.from_user.id})
+        scheduler.add_job(no_photo, 'date', run_date=run_date, id=job_id,
+                          kwargs={'user_id': callback_query.from_user.id})
     elif cb_data == 'no':
         user = db.get_user(callback_query.from_user.id)
         curator_id = user[6]
@@ -673,20 +702,21 @@ async def check_watched_video_btn(callback_query: types.CallbackQuery, callback_
 
 
 async def later_video(user_id: int) -> None:
-        link = db.get_video('before_video')
-        text = db.get_msg('video_again')
-        if bool(link):
-            text = text + f' <a href="{link}">видео-инструкцию </a>🙏🏻'
-        await bot.send_message(chat_id=user_id, text=text)
-        # run_date = datetime.now() + timedelta(seconds=5)
-        run_date = datetime.now() + timedelta(minutes=10)
-        scheduler.add_job(check_watched_video, 'date', run_date=run_date, kwargs={'user_id': user_id, 'status': 'again'})
+    link = db.get_video('before_video')
+    text = db.get_msg('video_again')
+    if bool(link):
+        text = text + f' <a href="{link}">видео-инструкцию </a>🙏🏻'
+    await bot.send_message(chat_id=user_id, text=text)
+    # run_date = datetime.now() + timedelta(seconds=5)
+    run_date = datetime.now() + timedelta(minutes=10)
+    scheduler.add_job(check_watched_video, 'date', run_date=run_date, kwargs={'user_id': user_id, 'status': 'again'})
 
 
 @dp.message_handler(state=fsm.Instruction.wait_time)
 async def later_time(msg: types.Message, state: FSMContext) -> None:
     try:
-        time = datetime.strptime((datetime.now().strftime('%d.%m.%Y') + ' ' + msg.text.replace(' ', '')), '%d.%m.%Y %H:%M')
+        time = datetime.strptime((datetime.now().strftime('%d.%m.%Y') + ' ' + msg.text.replace(' ', '')),
+                                 '%d.%m.%Y %H:%M')
         await msg.answer('Спасибо! Пришлю видео в указанное время!')
         user = db.get_user(msg.from_user.id)
         run_date = run_date_func(time, user[5])
@@ -745,7 +775,7 @@ async def before_photo(msg: types.Message, state: FSMContext) -> None:
         number = data['number']
     except:
         number = 1
-    await state.update_data(number=(number+1))
+    await state.update_data(number=(number + 1))
     photo = msg.photo.pop()
     filename = f'before_{msg.from_user.id}_{number}.png'
     await photo.download(destination_file=f'{file_path}/{filename}')

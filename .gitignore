@@ -1,2 +1,4 @@
 /database/bodhi.db
 .env
+/statistic/
+/media/
