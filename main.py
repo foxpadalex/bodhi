@@ -7,8 +7,6 @@ import os
 import random
 import time
 from datetime import datetime, timedelta
-import gspread
-import sqlalchemy
 
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
@@ -20,7 +18,7 @@ from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 import config as cfg
 import keyboards as kb
 import utils as fsm
-from db import DataBase
+from database import DataBase
 
 logging.basicConfig(level=logging.INFO)
 
@@ -28,7 +26,7 @@ storage = MemoryStorage()
 bot = Bot(token=cfg.USER_BOT_TOKEN, parse_mode='HTML')
 admin_bot = Bot(token=cfg.ADMIN_BOT_TOKEN, parse_mode='HTML')
 dp = Dispatcher(bot=bot, storage=storage)
-db = DataBase('bodhi.db')
+db = DataBase('database/bodhi.db')
 # db = DataBase('../bodhi.db')
 
 job_stores = {

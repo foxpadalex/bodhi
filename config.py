@@ -1,8 +1,13 @@
-USER_BOT_NAME = 'wellbodhi_bot'
-USER_BOT_TOKEN = ''
+import os
 
-ADMIN_BOT_NAME = 'wellbodhiadmin_bot'
-ADMIN_BOT_TOKEN = ''
+from dotenv import load_dotenv
+
+load_dotenv()
+
+USER_BOT_NAME = str(os.getenv("USER_BOT_NAME"))
+USER_BOT_TOKEN = str(os.getenv("USER_BOT_TOKEN"))
+ADMIN_BOT_NAME = str(os.getenv("ADMIN_BOT_NAME"))
+ADMIN_BOT_TOKEN = str(os.getenv("ADMIN_BOT_TOKEN"))
 
 
 class Texts:

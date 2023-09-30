@@ -1,18 +1,16 @@
 import logging
 from datetime import datetime
-import gspread
 import openpyxl
 
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 import config as cfg
 import keyboards as kb
 import utils as fsm
-from db import DataBase
+from database import DataBase
 
 logging.basicConfig(level=logging.INFO)
 
@@ -20,7 +18,7 @@ storage = MemoryStorage()
 bot = Bot(token=cfg.ADMIN_BOT_TOKEN, parse_mode='HTML')
 user_bot = Bot(token=cfg.USER_BOT_TOKEN, parse_mode='HTML')
 dp = Dispatcher(bot=bot, storage=storage)
-db = DataBase('bodhi.db')
+db = DataBase('database/bodhi.db')
 
 deleted_msgs = list()
 
