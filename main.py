@@ -110,7 +110,7 @@ async def get_statistic(msg: types.Message) -> None:
     title_row.append('Вопрос')
     title_row.extend(dates[0])
 
-    print(title_row, statistic_list, answers, dates)
+    print(statistic_list, answers, dates)
 
 async def support_answer(user_id) -> None:
     await bot.send_message(chat_id=user_id, text=db.get_msg('support_answer'), reply_markup=kb.support_answer())

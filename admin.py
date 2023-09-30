@@ -18,7 +18,7 @@ storage = MemoryStorage()
 bot = Bot(token=cfg.ADMIN_BOT_TOKEN, parse_mode='HTML')
 user_bot = Bot(token=cfg.USER_BOT_TOKEN, parse_mode='HTML')
 dp = Dispatcher(bot=bot, storage=storage)
-db = DataBase('database/bodhi.db')
+db = DataBase('./database/bodhi.db')
 
 deleted_msgs = list()
 
